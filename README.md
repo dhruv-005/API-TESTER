@@ -1,5 +1,6 @@
-# ⚡ API TESTER
-
+<h1 align="center">
+⚡ API TESTER
+</h1>
 <p align="center">
   <b>A Full-Stack Intelligent API Testing Platform with Machine Learning Integration</b>
 </p>
