@@ -270,6 +270,9 @@ http://127.0.0.1:5000
 -  Results Page
 <img width="1366" height="647" alt="Screenshot_2026-04-19_13_32_58" src="https://github.com/user-attachments/assets/0609af9e-9d12-4751-9331-289799211b29" />
 <img width="1366" height="654" alt="Screenshot_2026-04-19_13_33_06" src="https://github.com/user-attachments/assets/162ad17d-3cc8-4a5a-b854-2160f6c6a88f" />
+-  PDF Report
+              <img width="587" height="681" alt="Screenshot_2026-04-19_15_59_38" src="https://github.com/user-attachments/assets/83e6723a-4003-4caf-a042-359c27cdbfed" />
+
 
 ---
 ## 🔐 Security
