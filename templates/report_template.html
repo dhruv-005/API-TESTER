@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>API Test Report</title>
+<style>
+body { font-family: Arial, sans-serif; padding:20px; }
+h1 { text-align:center; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { border: 1px solid #333; padding: 8px; }
+th { background: #eee; }
+</style>
+</head>
+<body>
+<h1>API Test Report for {{ username }}</h1>
+<p>Generated at: {{ timestamp }}</p>
+<h2>Results</h2>
+<table>
+<tr><th>URL</th><th>Method</th><th>Status</th><th>Response Snippet</th><th>Cluster</th><th>Label</th></tr>
+{% for r, cluster, label in zip(results, clusters, labels) %}
+<tr>
+  <td>{{ r.url }}</td>
+  <td>{{ r.method }}</td>
+  <td>{{ r.status_code }}</td>
+  <td><pre style="max-height:100px; overflow:auto;">{{ r.response[:200] }}</pre></td>
+  <td>{{ cluster }}</td>
+  <td>{{ label }}</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>

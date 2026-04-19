@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>API TESTER - Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='signup_style.css') }}" rel="stylesheet" /> <!-- Same style -->
+</head>
+<body>
+  <!-- Login Form -->
+  <div class="auth-container" id="loginForm">
+    <h2>Login</h2>
+    <form id="loginForm" method="POST" action="{{ url_for('login') }}" onsubmit="return validateLogin();">
+      <div class="form-group">
+        <input type="email" id="loginEmail" name="username" placeholder="Email" />
+        <div class="error" id="loginEmailError" style="display:none;">Enter a valid email.</div>
+      </div>
+      <div class="form-group">
+        <input type="password" id="loginPassword" name="password" placeholder="Password" />
+        <span class="toggle-password" onclick="togglePassword('loginPassword')">👁</span>
+        <div class="error" id="loginPasswordError" style="display:none;">Password must be 6+ characters.</div>
+      </div>
+      <button type="submit">Login</button>
+      <div class="switch">Don’t have an account? <a href="{{ url_for('signup') }}">Sign Up</a></div>
+    </form>
+  </div>
+
+  <script>
+    function togglePassword(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === "password" ? "text" : "password";
+    }
+
+    function validateLogin() {
+      let valid = true;
+
+      const emailInput = document.getElementById("loginEmail");
+      const passwordInput = document.getElementById("loginPassword");
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      const emailError = document.getElementById("loginEmailError");
+      const passwordError = document.getElementById("loginPasswordError");
+
+      emailError.style.display = "none";
+      passwordError.style.display = "none";
+
+      // Basic email validation
+      if (!/^[^ ]+@[^ ]+\.[a-z]{2,3}$/.test(email)) {
+        emailError.style.display = "block";
+        valid = false;
+      }
+
+      if (password.length < 6) {
+        passwordError.style.display = "block";
+        valid = false;
+      }
+
+      if (valid) {
+        // Optional: you can submit the form here if desired
+        // document.getElementById('loginForm').submit();
+        alert("Login successful!");
+        return true; // Proceed with form submission
+      }
+      return false; // Prevent submission if validation fails
+    }
+  </script>
+</body>
+</html>

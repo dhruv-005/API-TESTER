@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mini API Tester</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+/* Your existing CSS styles here */
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: #121212;
+  color: #fff;
+  display: flex;
+  min-height: 100vh;
+  line-height: 1.4;
+  margin: 0;
+}
+.app {
+  display: flex;
+  flex: 1;
+}
+aside.left {
+  width: 250px;
+  background: rgba(18, 18, 18, 0.9);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+}
+aside.left h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  margin-bottom: 15px;
+  color: #FF5E00;
+}
+aside.left label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+#historyList {
+  max-height: 150px;
+  overflow-y: auto;
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px;
+  padding: 6px;
+  margin-bottom: 12px;
+}
+.history-item {
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.history-item:hover {
+  background: rgba(255,255,255,0.1);
+}
+.left-actions {
+  display: flex;
+  gap: 8px;
+}
+button.small {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #FF5E00, #00B2FF);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+button.small:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+button.small.ghost {
+  background: transparent;
+  border: 1px solid rgba(255,94,0,0.3);
+  color: #FF5E00;
+}
+button.small.ghost:hover {
+  background: rgba(255,94,0,0.1);
+}
+main.main {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.section {
+  background: rgba(255,255,255,0.02);
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,94,0,0.3);
+  background: transparent;
+  color: inherit;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input[type=text]:focus, select:focus, textarea:focus {
+  border-color: #FF5E00;
+}
+.response {
+  background: rgba(0,0,0,0.2);
+  padding: 10px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  overflow: auto;
+}
+#requestPreview {
+  height: 140px;
+}
+#responseText {
+  min-height: 230px;
+}
+.accuracy-box {
+  background: rgba(255,255,255,0.05);
+  padding: 8px;
+  border-radius: 6px;
+  min-height: 50px;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+.legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.pill {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #fff;
+}
+.acc-perfect { background: transparent; }
+.acc-incomplete { background: #f90; }
+.acc-abstract { background: #f00; }
+#runAccuracy {
+  margin-left: auto;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #FF5E00, #00B2FF);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+#runAccuracy:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+#respHeadersSummary {
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-left: 12px;
+}
+#downloadResp, #copyResp, #saveCurrent {
+  font-size: 0.75rem;
+  margin-left: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: none;
+  background: linear-gradient(135deg, #FF5E00, #00B2FF);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+#downloadResp:hover, #copyResp:hover, #saveCurrent:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="left">
+    <h1>Mini API Tester</h1>
+    <div style="margin-bottom:12px;">
+      <a href="#" id="goToApiTester" style="display:inline-block; padding:8px 12px; background:linear-gradient(135deg, #FF5E00, #00B2FF); color:#fff; border-radius:6px; text-decoration:none; font-weight:600;">API Tester Page</a>
+    </div>
+    <div>
+      <label>Saved History</label>
+      <div id="historyList" aria-live="polite"></div>
+    </div>
+    <div class="left-actions" style="margin-top:10px;">
+      <button id="clearHistory" class="small ghost">Clear All</button>
+      <button id="exportHistory" class="small ghost">Export</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Request Controls -->
+    <div class="section">
+      <div class="row" style="align-items:center">
+        <select id="method" style="width:120px">
+          <option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option>
+        </select>
+        <input id="url" type="text" placeholder="Enter request URL" />
+        <input id="apiKey" type="text" placeholder="API Key" class="owner-input" />
+        <button id="send" class="small">Send</button>
+        <button id="cancel" class="small ghost">Cancel</button>
+      </div>
+      <div class="meta" style="margin-top:8px">
+        <div id="statusText">Status: -</div>
+        <div id="timeText">Time: -</div>
+        <div id="sizeText">Size: -</div>
+      </div>
+    </div>
+    <!-- Headers & Body -->
+    <div class="section split" style="display:flex; gap:10px;">
+      <!-- Headers -->
+      <div style="flex:1;">
+        <label>Headers</label>
+        <div id="headersArea"></div>
+        <div style="margin-top:6px">
+          <button id="addHeader" class="small ghost">+ Header</button>
+          <button id="clearHeaders" class="small ghost">Clear</button>
+        </div>
+      </div>
+      <!-- Body -->
+      <div style="flex:1;">
+        <label>Body</label>
+        <div style="display:flex; gap:8px; margin-bottom:6px">
+          <select id="bodyType" style="width:160px">
+            <option value="none">No body</option>
+            <option value="raw">Raw</option>
+            <option value="form">Form data</option>
+          </select>
+          <button id="prettyJson" class="small ghost">Pretty / Validate JSON</button>
+        </div>
+        <div id="bodyRawArea" style="display:none">
+          <textarea id="bodyRaw" rows="8" placeholder='Raw body (e.g. JSON)' style="width:100%; min-height:80px"></textarea>
+        </div>
+        <div id="bodyFormArea" style="display:none">
+          <div id="formFields"></div>
+          <div style="margin-top:6px; display:flex; gap:8px">
+            <button id="addFormField" class="small ghost">+ Field</button>
+            <button id="clearFormFields" class="small ghost">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Response & Analysis -->
+    <div class="section">
+      <div style="display:flex; flex-wrap:wrap; gap:10px;">
+        <!-- Request Preview -->
+        <div style="flex:1 1 48%">
+          <label>Request Preview</label>
+          <pre id="requestPreview" class="response" style="height:140px"></pre>
+          <!-- Accuracy -->
+          <div style="margin-top:10px">
+            <label>Accuracy (line-by-line)</label>
+            <div class="accuracy-box" id="accuracyBox">No response analyzed yet.</div>
+            <div id="accuracySummary">Total Accuracy: -</div>
+            <div class="legend" style="margin-top:6px; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+              <div class="pill acc-perfect" style="background:transparent;">✅ Perfect</div>
+              <div class="pill acc-incomplete" style="background:transparent;">⚠️ Incomplete</div>
+              <div class="pill acc-abstract" style="background:transparent;">❌ Suspicious</div>
+              <div style="flex:1"></div>
+              <button id="runAccuracy" class="small ghost">Check Accuracy</button>
+            </div>
+          </div>
+        </div>
+        <!-- Response -->
+        <div style="flex:1 1 48%">
+          <label>Response</label>
+          <div class="response" id="responseArea" style="height:230px; overflow:auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+              <div>
+                <span id="statusBadge" class="status muted">-</span>
+                <span id="respHeadersSummary" class="muted" style="margin-left:12px">-</span>
+              </div>
+              <div style="display:flex; gap:8px">
+                <button id="downloadResp" class="small ghost">Download</button>
+                <button id="copyResp" class="small ghost">Copy</button>
+                <button id="saveCurrent" class="small ghost">Save to History</button>
+              </div>
+            </div>
+            <pre id="responseText" style="min-height:230px"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let controller = null;
+const state = {
+  history: JSON.parse(localStorage.getItem('mini_api_history') || '[]'),
+  lastResponse: null
+};
+
+// Initialize Header Rows
+function addHeaderRow(k='', v=''){
+  const div = document.createElement('div');
+  div.className='kv';
+  div.innerHTML = `<input placeholder="Header name" value="${k}"><input placeholder="Header value" value="${v}"><button class="small ghost">✕</button>`;
+  div.querySelector('button').onclick = ()=>div.remove();
+  $('headersArea').appendChild(div);
+}
+function addFormFieldRow(k='', v=''){
+  const div = document.createElement('div');
+  div.className='kv';
+  div.innerHTML = `<input placeholder="Field name" value="${k}"><input placeholder="Field value" value="${v}"><button class="small ghost">✕</button>`;
+  div.querySelector('button').onclick= ()=>div.remove();
+  $('formFields').appendChild(div);
+}
+function clearChildren(id){$(id).innerHTML='';}
+
+// Build request preview string
+function buildRequestPreview(opts){
+  let text = `${opts.method} ${opts.url}\n\nHeaders:\n`;
+  for(const [k,v] of Object.entries(opts.headers||{})){
+    text += `${k}: ${v}\n`;
+  }
+  if(opts.apiKey && opts.apiKey.trim()){
+    text += `\nAuthorization: ApiKey ${opts.apiKey}\n`;
+  }
+  text += `\nBody:\n`;
+  if(opts.bodyRaw) text += opts.bodyRaw;
+  else if(opts.form && Object.keys(opts.form).length) text += JSON.stringify(opts.form, null, 2);
+  else text += '(none)';
+  return text;
+}
+
+// Read current UI inputs
+function readOptionsFromUI(){
+  const method = $('method').value.trim();
+  const url = $('url').value.trim();
+  const apiKey = $('apiKey').value.trim();
+  const headers = {};
+  $('headersArea').querySelectorAll('.kv').forEach(row => {
+    const k = row.children[0].value.trim();
+    const v = row.children[1].value.trim();
+    if(k) headers[k]=v;
+  });
+  if(apiKey) headers['Authorization'] = `ApiKey ${apiKey}`;
+
+  const bodyType = $('bodyType').value;
+  let bodyRaw = null; let form = null;
+  if(bodyType==='raw') bodyRaw = $('bodyRaw').value;
+  if(bodyType==='form'){
+    form={};
+    $('formFields').querySelectorAll('.kv').forEach(row => {
+      const k = row.children[0].value.trim();
+      const v = row.children[1].value;
+      if(k) form[k]=v;
+    });
+  }
+  return {method, url, headers, bodyType, bodyRaw, form, apiKey};
+}
+
+// Generate accurate line-by-line analysis
+function classifyLine(line){
+  const trimmed = line.trim();
+  if(!trimmed) return {cls:'acc-incomplete', label:'Empty'};
+  const lc=trimmed.toLowerCase();
+  if(/\b(example|dummy|abstract|placeholder|test|sample)\b/.test(lc)){
+    return {cls:'acc-abstract', label:'Abstracted'};
+  }
+  if(trimmed==='{' || trimmed==='}' || trimmed==='[' || trimmed===']'){
+    return {cls:'acc-perfect', label:'Structure'};
+  }
+  if(/["']?[a-zA-Z0-9_\- ]+["']?\s*:\s*.+/.test(trimmed)){
+    if(/:\s*$/.test(trimmed) || (/["']$/.test(trimmed) && !/["']:.+/.test(trimmed))){
+      return {cls:'acc-incomplete', label:'Incomplete'};
+    }
+    return {cls:'acc-perfect', label:'Perfect'};
+  }
+  if(/,$/.test(trimmed)) return {cls:'acc-incomplete', label:'Incomplete'};
+  return {cls:'acc-abstract', label:'Suspicious'};
+}
+function runAccuracyOnText(text){
+  const lines = text.split(/\r?\n/);
+  const out = lines.map(l=> {
+    const c = classifyLine(l);
+    return {line: l, cls: c.cls, label: c.label};
+  });
+  return out;
+}
+function renderAccuracy(out){
+  const box = $('accuracyBox');
+  const summary = $('accuracySummary');
+  if(!out || out.length===0){
+    box.textContent='No lines to analyze.';
+    summary.textContent='Total Accuracy: -';
+    summary.style.color='';
+    return;
+  }
+  box.innerHTML='';
+  let total=out.length, perfect=0;
+  out.forEach(o=>{
+    if(o.cls==='acc-perfect') perfect++;
+    const div=document.createElement('div');
+    div.style.padding='2px 0';
+    const spanLabel=document.createElement('span');
+    spanLabel.textContent=` ${o.label} `;
+    spanLabel.style.marginRight='8px';
+    spanLabel.className=o.cls;
+    const spanLine=document.createElement('span');
+    spanLine.textContent= o.line;
+    div.appendChild(spanLabel);
+    div.appendChild(spanLine);
+    box.appendChild(div);
+  });
+  const percent= total ? (perfect/total)*100 : 0;
+  const pctText= total ? `${percent.toFixed(1)}% (${perfect}/${total} lines Perfect)` : '-';
+  summary.textContent= `Total Accuracy: ${pctText}`;
+  if(percent>=80){ summary.style.color='#4CAF50'; }
+  else if(percent>=50){ summary.style.color='#FFC107'; }
+  else{ summary.style.color='#F44336'; }
+}
+
+// Send request
+async function sendRequest() {
+  const opts=readOptionsFromUI();
+  if(!opts.url){
+    alert('Please enter a URL.');
+    return;
+  }
+
+  // Build and show request preview
+  const preview = $('requestPreview');
+  preview.style.opacity=0;
+  preview.textContent=buildRequestPreview(opts);
+  preview.style.transition='opacity 0.5s ease';
+  setTimeout(()=>{ preview.style.opacity=1; },100);
+
+  // Reset response area
+  const responseDiv=$('responseArea');
+  responseDiv.style.opacity=0;
+  $('statusText').textContent='Status: -';
+  $('timeText').textContent='Time: -';
+  $('sizeText').textContent='Size: -';
+  $('responseText').textContent='';
+  $('accuracyBox').textContent='No response analyzed yet.';
+  $('accuracySummary').textContent='Total Accuracy: -';
+
+  if(controller){ try{ controller.abort(); }catch(e){} }
+  controller=new AbortController();
+  const signal=controller.signal;
+  const startTime=performance.now();
+
+  // prepare fetch options
+  let fetchOptions={ method:opts.method, headers:{...opts.headers}, signal };
+  const methodHasBody= ['POST','PUT','PATCH','DELETE'].includes(opts.method.toUpperCase());
+  if(methodHasBody){
+    if(opts.bodyType==='raw' && opts.bodyRaw){
+      fetchOptions.body=opts.bodyRaw;
+    }else if(opts.bodyType==='form' && opts.form){
+      const formData=new FormData();
+      for(const k in opts.form) formData.append(k, opts.form[k]);
+      fetchOptions.body=formData;
+      if(fetchOptions.headers['Content-Type']) delete fetchOptions.headers['Content-Type'];
+    }
+  }
+
+  try {
+    const response=await fetch(opts.url, fetchOptions);
+    const elapsed= Math.round(performance.now()-startTime);
+    $('timeText').textContent=`Time: ${elapsed} ms`;
+    $('statusText').textContent=`Status: ${response.status} ${response.statusText}`;
+    $('statusBadge').textContent= `${response.status} ${response.statusText}`;
+    $('statusBadge').className='status '+(response.ok?'ok':'err');
+
+    // headers
+    const headersObj={};
+    response.headers.forEach((v,k)=>headersObj[k]=v);
+    $('respHeadersSummary').textContent= `${Object.keys(headersObj).length} header(s)`;
+
+    const contentType=response.headers.get('content-type')||'';
+    let bodyText=''; let blob=null;
+    if(contentType.includes('application/json')){
+      bodyText=await response.text();
+      try{
+        const parsed=JSON.parse(bodyText);
+        $('responseText').textContent=JSON.stringify(parsed,null,2);
+      }catch(e){
+        $('responseText').textContent=bodyText;
+      }
+    }else if(contentType.startsWith('text/') || contentType.includes('xml') || contentType.includes('html')){
+      bodyText=await response.text();
+      $('responseText').textContent=bodyText;
+    }else{
+      blob= await response.blob();
+      $('responseText').textContent=`Binary response: ${blob.size} bytes - click Download`;
+      state.lastResponse={blob, filename:`response-${Date.now()}`};
+    }
+    $('sizeText').textContent='Size: '+(response.headers.get('content-length')|| (blob?blob.size:'unknown'));
+
+    // Save response for download
+    if(blob){ 
+      state.lastResponse={blob, filename:`response-${Date.now()}`};
+    }else{
+      state.lastResponse={text: $('responseText').textContent, headers: headersObj, status: response.status};
+    }
+
+    // Save to history
+    saveHistoryEntry({
+      method:opts.method,
+      url:opts.url,
+      headers: opts.headers,
+      bodyType:opts.bodyType,
+      bodyRaw:opts.bodyRaw,
+      form:opts.form,
+      apiKey:opts.apiKey,
+      time: Date.now()
+    });
+
+    // Animate response
+    responseDiv.style.transition='opacity 0.5s';
+    responseDiv.style.opacity=1;
+
+    // Run accuracy analysis
+    setTimeout(()=>{
+      const txt=$('responseText').textContent||'';
+      const analysis=runAccuracyOnText(txt);
+      renderAccuracy(analysis);
+    },60);
+  } catch(e){
+    if(e.name==='AbortError'){
+      $('responseText').textContent='Request canceled.';
+      $('statusText').textContent='Status: canceled';
+      $('statusBadge').textContent='Canceled';
+      $('statusBadge').className='status err';
+    }else{
+      $('responseText').textContent='Error: '+e.message;
+      $('statusText').textContent='Status: error';
+      $('statusBadge').textContent='Error';
+      $('statusBadge').className='status err';
+    }
+  }
+}
+
+// Save to history
+function saveHistoryEntry(entry){
+  state.history.push(entry);
+  localStorage.setItem('mini_api_history', JSON.stringify(state.history));
+  renderHistory();
+}
+
+// Render history
+function renderHistory(){
+  const list= $('historyList');
+  list.innerHTML='';
+  [...state.history].reverse().forEach(h=>{
+    const div=document.createElement('div');
+    div.className='history-item';
+    div.innerHTML= `<strong>${h.method}</strong> ${h.url}<div class="muted">${new Date(h.time).toLocaleString()}</div>`;
+    div.onclick=()=>loadIntoForm(h);
+    list.appendChild(div);
+  });
+}
+
+// Load saved request into form
+function loadIntoForm(h){
+  $('method').value=h.method || 'GET';
+  $('url').value=h.url|| '';
+  $('apiKey').value=h.apiKey|| '';
+  document.getElementById('headersArea').innerHTML='';
+  if(h.headers) Object.entries(h.headers).forEach(([k,v])=>addHeaderRow(k,v));
+  $('bodyType').value=h.bodyType||'none';
+  document.getElementById('bodyType').dispatchEvent(new Event('change'));
+  $('bodyRaw').value=h.bodyRaw||'';
+  document.getElementById('formFields').innerHTML='';
+  if(h.form) Object.entries(h.form).forEach(([k,v])=>addFormFieldRow(k,v));
+  // Build request preview
+  $('requestPreview').textContent=buildRequestPreview(readOptionsFromUI());
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', ()=>{
+
+  // Add default headers
+  addHeaderRow('Accept','application/json');
+  addHeaderRow('Content-Type','application/json');
+
+  // Buttons
+  $('addHeader').onclick= ()=>addHeaderRow();
+  $('clearHeaders').onclick= ()=>{ document.getElementById('headersArea').innerHTML=''; };
+  $('addFormField').onclick= ()=>addFormFieldRow();
+  $('clearFormFields').onclick= ()=>{ document.getElementById('formFields').innerHTML=''; };
+
+  // Body type change
+  $('bodyType').onchange= (e) => {
+    const v= e.target.value;
+    document.getElementById('bodyRawArea').style.display= v==='raw'?'block':'none';
+    document.getElementById('bodyFormArea').style.display= v==='form'?'block':'none';
+  };
+
+  // Send button
+  $('send').onclick= ()=>sendRequest();
+
+  // Cancel button
+  $('cancel').onclick= ()=>{ if(controller) controller.abort(); };
+
+  // Pretty JSON
+  $('prettyJson').onclick= ()=>{
+    try{
+      const t=$('bodyRaw').value;
+      const p= JSON.parse(t);
+      $('bodyRaw').value= JSON.stringify(p, null, 2);
+      alert('Valid JSON formatted.');
+    }catch(e){ alert('Invalid JSON: '+e.message); }
+  };
+
+  // Download response
+  $('downloadResp').onclick= ()=>{
+    if(state.lastResponse?.blob){
+      const url= URL.createObjectURL(state.lastResponse.blob);
+      const a= document.createElement('a');
+      a.href= url;
+      a.download= state.lastResponse.filename||'response.bin';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }else if(state.lastResponse?.text){
+      const blob= new Blob([state.lastResponse.text], {type:'text/plain'});
+      const url= URL.createObjectURL(blob);
+      const a= document.createElement('a');
+      a.href= url; a.download='response.txt';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }else{
+      alert('No response to download.');
+    }
+  };
+
+  // Copy response
+  $('copyResp').onclick= async ()=> {
+    try{
+      await navigator.clipboard.writeText($('responseText').textContent);
+      alert('Copied to clipboard.');
+    }catch(e){ alert('Copy failed: '+e.message); }
+  };
+
+  // Save current response to history
+  $('saveCurrent').onclick= ()=>{
+    const opts=readOptionsFromUI();
+    saveHistoryEntry({...opts, time: Date.now()});
+    alert('Saved to history.');
+  };
+
+  // Clear / export history
+  $('clearHistory').onclick= ()=>{
+    if(confirm('Clear all history?')){
+      localStorage.removeItem('mini_api_history');
+      state.history=[];
+      renderHistory();
+    }
+  };
+  $('exportHistory').onclick= ()=>{
+    const blob= new Blob([JSON.stringify(state.history, null, 2)], {type:'application/json'});
+    const a= document.createElement('a');
+    const url= URL.createObjectURL(blob);
+    a.href= url; a.download='api_history.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  // Run accuracy
+  $('runAccuracy').onclick= ()=>{
+    const txt= $('responseText').textContent || '';
+    const analysis= runAccuracyOnText(txt);
+    renderAccuracy(analysis);
+  };
+
+  // Theme select (optional)
+});
+
+// Add header row
+function addHeaderRow(k='', v=''){
+  const div = document.createElement('div');
+  div.className='kv';
+  div.innerHTML= `<input placeholder="Header name" value="${k}"><input placeholder="Header value" value="${v}"><button class="small ghost">✕</button>`;
+  div.querySelector('button').onclick= ()=>div.remove();
+  $('headersArea').appendChild(div);
+}
+// Add form field row
+function addFormFieldRow(k='', v=''){
+  const div = document.createElement('div');
+  div.className='kv';
+  div.innerHTML= `<input placeholder="Field name" value="${k}"><input placeholder="Field value" value="${v}"><button class="small ghost">✕</button>`;
+  div.querySelector('button').onclick= ()=>div.remove();
+  $('formFields').appendChild(div);
+}
+// Build request preview
+function buildRequestPreview(opts){
+  let txt= `${opts.method} ${opts.url}\n\nHeaders:\n`;
+  for(const [k,v] of Object.entries(opts.headers||{})){
+    txt+=`${k}: ${v}\n`;
+  }
+  if(opts.apiKey && opts.apiKey.trim()){
+    txt+=`\nAuthorization: ApiKey ${opts.apiKey}\n`;
+  }
+  txt+=`\nBody:\n`;
+  if(opts.bodyRaw) txt+=opts.bodyRaw;
+  else if(opts.form && Object.keys(opts.form).length) txt+=JSON.stringify(opts.form, null, 2);
+  else txt+='(none)';
+  return txt;
+}
+
+// Initialize theme (optional)
+// (No theme toggle in this code; you can add if needed)
+
+// Run the code
+</script>
+</body>
+</html>

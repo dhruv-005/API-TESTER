@@ -1,0 +1,142 @@
+/* api_style.css */
+
+/* Reset and base styles */
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: #0a0a0a;
+  color: white;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Container styles */
+.auth-container {
+  width: 90%;
+  max-width: 380px;
+  padding: 30px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 94, 0, 0.3);
+  box-shadow: 0 0 30px rgba(255, 94, 0, 0.3);
+  backdrop-filter: blur(12px);
+  margin: 10px;
+  box-sizing: border-box;
+}
+
+/* Header styles */
+.auth-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: 1.8rem;
+  background: linear-gradient(45deg, #FF5E00, #00B2FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Form group styles */
+.form-group {
+  margin-bottom: 18px;
+  position: relative;
+}
+
+/* Input styles */
+.form-group input {
+  width: 100%;
+  padding: 12px 40px 12px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 94, 0, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #FF5E00;
+  box-shadow: 0 0 15px rgba(255, 94, 0, 0.5);
+}
+
+/* Toggle password icon styles */
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #FF5E00;
+}
+
+/* Error message styles */
+.error {
+  color: #ff4d4d;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  display: none;
+}
+
+/* Button styles */
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(45deg, #FF5E00, #00B2FF);
+  color: white;
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(255, 94, 0, 0.7);
+}
+
+/* Switch link styles */
+.switch {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+.switch a {
+  color: #00B2FF;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .auth-container {
+    padding: 20px;
+  }
+
+  .auth-container h2 {
+    font-size: 1.5rem;
+  }
+
+  button {
+    font-size: 0.9rem;
+  }
+
+  .switch {
+    font-size: 0.8rem;
+  }
+
+  .toggle-password {
+    right: 10px;
+    font-size: 0.8rem;
+  }
+}
