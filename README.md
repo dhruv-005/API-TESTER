@@ -49,7 +49,6 @@ With features like **automated testing, secure authentication, real-time analysi
 - [⚙️ Installation & Setup](#️-installation--setup)
 - [🗄️ Database Schema](#️-database-schema)
 - [📸 Screenshots](#-screenshots)
-- [🌐 Live Demo](#-live-demo)
 - [🔐 Security](#-security)
 - [📜 License](#-license)
 - [👨‍💻 Author](#-author)
